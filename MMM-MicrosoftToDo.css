@@ -1,0 +1,119 @@
+.MSToDo {
+  min-width: 300px;
+  line-height: normal;
+  display: block;
+}
+
+.MSToDo .task {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: flex-start;
+  font-size: 60%;
+}
+
+/*---IMPORTANCE---*/
+.MSToDo .importance {
+  order: 1;
+  width: 10%;
+}
+
+/*---CAPTION---*/
+.MSToDo .caption {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 15px;
+  flex-grow: 1;
+  width: 60%;
+  order: 2;
+  flex: 1;
+}
+
+.MSToDo .caption .title {
+  display: inline-block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  color: #DDD;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.MSToDo .caption .decorations {
+  display: flex;
+  font-size: x-small;
+  align-items: center;
+}
+
+.MSToDo .caption .decorations .text {
+  margin: 0 10px 0 5px;
+}
+
+.MSToDo .caption .reminder,
+.MSToDo .caption .recurence {
+  display: inline-block;
+  height: 100%;
+  color: #FFF;
+  order: 1;
+  font-size: 0.5em;
+  text-align: left;
+}
+
+/*---DUEDATE---*/
+.MSToDo .dueDate {
+  height: 100%;
+  width: 20%;
+  color: #FFF;
+  order: 3;
+  /*font-size: 1.5em;*/
+  text-align: right;
+}
+
+/*---AVATAR---*/
+.MSToDo .avatar {
+  order: 4;
+  width: 10%;
+}
+
+
+.MSToDo .overdue {
+  color: rgb(218, 45, 45) !important;
+}
+
+.MSToDo .taskCount0 {}
+
+.MSToDo .lastUpdated {
+  font-size: small;
+  font-weight: lighter;
+  text-align: right;
+}
+
+.MSToDo .initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #555;
+  color: yellow;
+  min-width: 1em;
+  border-radius: 50%;
+  vertical-align: middle;
+  padding: 5px;
+  font-size: .5em;
+  height: 30%;
+  margin-left: 10px;
+
+}
+
+.MSToDo .initials:before {
+  content: '';
+  float: left;
+  width: auto;
+  padding-bottom: 100%;
+}
