@@ -2,17 +2,17 @@
 Module.register("MMM-MicrosoftToDo", {
 
   defaults: {
+    oauth2ClientId: "",
     oauth2ClientSecret: "",
     oauth2RefreshToken: "",
-    oauth2ClientId: "",
     folderName: "Tasks",
     itemLimit: 20, // optional: limit on the number of items to show from the list
+    refreshInterval: 15, // Refresh every 15 minutes
+    sortOrder: "none", // 'none', 'assignedTo', 'subject', 'importance', 'dueDate', 'reminderDate';
+    displayWhenEmpty: false, // optional: default will show the module even when the todo list is empty
+    displayLastUpdate: false,
     displayDecorations: false, //display information under the task name
     displayAvatar: "none", //could be:  'none', 'initials', 'icon'
-    displayLastUpdate: false,
-    sortOrder: "none", // 'none', 'subject', 'importance', 'dueDate', 'reminderDate';
-    displayWhenEmpty: false, // optional: default will show the module even when the todo list is empty
-    refreshInterval: 1000 * 60 * 15, // Refresh every 15 minutes
 
     avatars: [],
     list: [],
@@ -98,7 +98,7 @@ Module.register("MMM-MicrosoftToDo", {
               decorationsWrapper.appendChild(recurTextCell);
             }
 
-            if (item.body.content != "") {
+            if (item.body && item.body.content != "") {
               var bodyIconCell = document.createElement("div");
               bodyIconCell.className = "iconify icons";
               bodyIconCell.dataset.icon = "bx-bx-note";
@@ -115,7 +115,7 @@ Module.register("MMM-MicrosoftToDo", {
 
         //var today = moment("2020-04-04");
         if (item.dueDateTime != null) {
-          var date = moment(item.dueDateTime.dateTime); //MS endpoint gives UTC date/time
+          var date = moment(item.dueDateTime.dateTime);
 
           if (date.isSame(today, "day")) {
             dueDateCell.innerHTML = this.translate("TODAY");
@@ -192,13 +192,13 @@ Module.register("MMM-MicrosoftToDo", {
       updateinfo.className = "lastUpdated";
       var now = moment();
       var value = moment.duration(this.lastUpdate.diff(now));
-      console.log(this.identifier + ": "
-        + this.lastUpdate.format("HH:mm:ss")
-        + " -- " + now.format("HH:mm:ss")
-        + " -- " + value.hours() + ":"
-        + value.minutes() + ":"
-        + value.seconds()
-      );
+//      console.log(this.identifier + ": "
+//        + this.lastUpdate.format("HH:mm:ss")
+//        + " -- " + now.format("HH:mm:ss")
+//        + " -- " + value.hours() + ":"
+//        + value.minutes() + ":"
+//        + value.seconds()
+//      );
       updateinfo.innerHTML = "Last updated " + moment.duration(this.lastUpdate.diff(moment())).humanize() + " ago";
       wrapper.appendChild(updateinfo);
     }
@@ -213,7 +213,8 @@ Module.register("MMM-MicrosoftToDo", {
   getTranslations: function () {
     return {
       en: "translations/en.js",
-      de: "translations/de.js"
+      de: "translations/de.js",
+      fr: "translations/fr.js",
     };
   },
 
@@ -222,20 +223,18 @@ Module.register("MMM-MicrosoftToDo", {
   },
 
   socketNotificationReceived: function (notification, payload) {
-    console.log(notification);
     if (notification === ("DATA_FETCHED_" + this.config.id)) {
       //Save connection data in config
       this.config.accessToken = payload.accessToken;
       this.config.accessTokenExpiry = payload.accessTokenExpiry;
       this.config.listId = payload.listId;
-      console.log(this.config);
 
       this.list = payload.value;
 
       if (this.config.displayLastUpdate) {
 
         this.lastUpdate = moment();
-        console.log(this.identifier + ": socketNotificationReceived() last update: " + this.lastUpdate.format("HH:mm:ss"));
+        //console.log(this.identifier + ": socketNotificationReceived() last update: " + this.lastUpdate.format("HH:mm:ss"));
       }
 
       // check if module should be hidden according to list size and the module's configuration
@@ -265,7 +264,7 @@ Module.register("MMM-MicrosoftToDo", {
     }
 
     if (notification === "CLOCK_MINUTE") {
-      console.log(this.identifier + ": Minute Last Updated");
+      //console.log(this.identifier + ": Minute Last Updated");
       if (this.config.displayLastUpdate && this.lastUpdate != null) {
         var updateinfo = document.getElementsByClassName("lastUpdated");
         updateinfo[0].innerHTML = "Last updated " + moment.duration(this.lastUpdate.diff(moment())).humanize() + " ago";
@@ -288,12 +287,12 @@ Module.register("MMM-MicrosoftToDo", {
     self.config.accessTokenExpiry = moment();
 
     var refreshFunction = function () {
-      console.log(self.identifier + ": refreshFunction() Called.");
+      //console.log(self.identifier + ": refreshFunction() Called.");
       self.sendSocketNotification("FETCH_DATA", self.config);
     };
 
     refreshFunction();
-    setInterval(refreshFunction, self.config.refreshInterval);
+    setInterval(refreshFunction, self.config.refreshInterval * 1000 * 60);
   },
 
 });

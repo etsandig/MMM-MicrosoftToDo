@@ -1,7 +1,7 @@
 .MSToDo {
   min-width: 300px;
+  font-size: .6em;
   line-height: normal;
-  display: block;
 }
 
 .MSToDo .task {
@@ -11,12 +11,11 @@
   justify-content: flex-start;
   align-items: center;
   align-content: flex-start;
-  font-size: 60%;
 }
 
 /*---IMPORTANCE---*/
 .MSToDo .importance {
-  order: 1;
+  order: 4;
   width: 10%;
 }
 
@@ -48,22 +47,12 @@
 
 .MSToDo .caption .decorations {
   display: flex;
-  font-size: x-small;
+  font-size: 0.6em;
   align-items: center;
 }
 
 .MSToDo .caption .decorations .text {
   margin: 0 10px 0 5px;
-}
-
-.MSToDo .caption .reminder,
-.MSToDo .caption .recurence {
-  display: inline-block;
-  height: 100%;
-  color: #FFF;
-  order: 1;
-  font-size: 0.5em;
-  text-align: left;
 }
 
 /*---DUEDATE---*/
@@ -72,14 +61,14 @@
   width: 20%;
   color: #FFF;
   order: 3;
-  /*font-size: 1.5em;*/
   text-align: right;
 }
 
 /*---AVATAR---*/
 .MSToDo .avatar {
-  order: 4;
+  order: 1;
   width: 10%;
+  height: 1.2em;
 }
 
 
@@ -87,10 +76,8 @@
   color: rgb(218, 45, 45) !important;
 }
 
-.MSToDo .taskCount0 {}
-
 .MSToDo .lastUpdated {
-  font-size: small;
+  font-size: 0.6em;
   font-weight: lighter;
   text-align: right;
 }

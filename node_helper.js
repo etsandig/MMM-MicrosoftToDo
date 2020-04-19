@@ -26,7 +26,7 @@ module.exports = NodeHelper.create({
     },
 
     fetchData: function (config) {
-        console.log("fetchData() Called");
+        //console.log("fetchData() Called");
 
         var self = this;
 
@@ -34,7 +34,7 @@ module.exports = NodeHelper.create({
         // Utility function to retrieve all the tasks in a given folder
         //
         var _getTodos = function (config) {
-            console.log("_getTodos() Called");
+            //console.log("_getTodos() Called");
             // based on new configuration data (listId), get tasks
             var listUrl = "https://graph.microsoft.com/beta/me/outlook/taskFolders/"
                 + config.listId
@@ -62,6 +62,9 @@ module.exports = NodeHelper.create({
 
                     // Sort tasks
                     switch (config.sortOrder) {
+                        case "assignedTo":
+                            response.data.value.sort((a, b) => a.assignedTo.localeCompare(b.assignedTo));
+                            break;
                         case "subject":
                             response.data.value.sort((a, b) => a.subject.localeCompare(b.subject));
                             break;
@@ -86,7 +89,7 @@ module.exports = NodeHelper.create({
                             // no sort
                             break;
                     }
-                    console.log(JSON.stringify(response.data.value,null,2))
+                    //console.log(JSON.stringify(response.data.value,null,2))
                     self.sendSocketNotification("DATA_FETCHED_" + config.id, {
                         value: response.data.value,
                         listId: config.listId,
@@ -106,7 +109,7 @@ module.exports = NodeHelper.create({
         // Get a new token if it has expired before we get the list of tasks
         //
         if (moment().isAfter(config.accessTokenExpiry)) {
-            console.log("token has EXPIRED!!!");
+            //console.log("token has EXPIRED!!!");
 
             var data = {
                 client_id: config.oauth2ClientId,
@@ -124,25 +127,25 @@ module.exports = NodeHelper.create({
                 url: "https://login.microsoftonline.com/common/oauth2/v2.0/token",
             })
                 .then(response => {
-                    console.log("Got Token Response");
+                    //console.log("Got Token Response");
                     config.accessToken = response.data.access_token;
                     config.accessTokenExpiry = moment().add(response.data.expires_in, 'seconds');
 
                     // set config to the default list if no list ID was provided
                     if (!config.listId) {
-                        console.log("Retrieving folder ID");
+                        //console.log("Retrieving folder ID");
                         axios.get("https://graph.microsoft.com/beta/me/outlook/taskFolders/?$top=200", {
                             headers: { 'Authorization': 'Bearer ' + config.accessToken },
                         })
                             .then(response => {
-                                console.log("Got Folder List");
+                                //console.log("Got Folder List");
 
                                 const found = response.data.value.find(element => element.name === config.folderName);
                                 if (found) {
                                     config.listId = found.id;
                                     _getTodos(config);
                                 } else {
-                                    console.log("Couldn't find ", config.folderName);
+                                    //console.log("Couldn't find ", config.folderName);
                                     self.sendSocketNotification("FETCH_INFO_ERROR" + config.id, error);
                                 }
                             })
@@ -162,7 +165,6 @@ module.exports = NodeHelper.create({
                     self.sendSocketNotification("FETCH_INFO_ERROR" + config.id, error);
                 });
         } else {
-            console.log("token still valid!!!");
             _getTodos(config);
         }
     }
